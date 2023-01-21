@@ -16,39 +16,49 @@ def gen(user_id):
     return arr
 
 
-def merge(arr, start, mid, end):
-    start2 = mid + 1
+def merge(arr, l, m, r):
+    n1 = m - l + 1
+    n2 = r - m
 
-    if arr[mid] <= arr[start2]:
-        return
+    LEFT = [0] * n1
+    RIGHT = [0] * n2
 
-    while start <= mid and start2 <= end:
+    for i in range(0, n1):
+        LEFT[i] = arr[l + i]
 
-        if arr[start] <= arr[start2]:
-            start += 1
+    for j in range(0, n2):
+        RIGHT[j] = arr[m + 1 + j]
+
+    i = 0
+    j = 0
+    k = l
+
+    while i < n1 and j < n2:
+        if LEFT[i] <= RIGHT[j]:
+            arr[k] = LEFT[i]
+            i += 1
         else:
-            value = arr[start2]
-            index = start2
+            arr[k] = RIGHT[j]
+            j += 1
+        k += 1
 
-            while index != start:
-                arr[index] = arr[index - 1]
-                index -= 1
+    while i < n1:
+        arr[k] = LEFT[i]
+        i += 1
+        k += 1
 
-            arr[start] = value
-
-            start += 1
-            mid += 1
-            start2 += 1
+    while j < n2:
+        arr[k] = RIGHT[j]
+        j += 1
+        k += 1
 
 
 def merge_sort(arr, left, right):
     if left < right:
         m = left + (right - left) // 2
 
-        # Sort first and second halves
         merge_sort(arr, left, m)
         merge_sort(arr, m + 1, right)
-
         merge(arr, left, m, right)
 
 
