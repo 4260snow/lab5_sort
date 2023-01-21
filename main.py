@@ -16,16 +16,40 @@ def gen(user_id):
     return arr
 
 
-def bubble_sort(arr):
-    n = len(arr)
-    swapped = False
-    for i in range(n - 1):
-        for j in range(0, n - i - 1):
-            if arr[j] > arr[j + 1]:
-                swapped = True
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
-        if not swapped:
-            return
+def merge(arr, start, mid, end):
+    start2 = mid + 1
+
+    if arr[mid] <= arr[start2]:
+        return
+
+    while start <= mid and start2 <= end:
+
+        if arr[start] <= arr[start2]:
+            start += 1
+        else:
+            value = arr[start2]
+            index = start2
+
+            while index != start:
+                arr[index] = arr[index - 1]
+                index -= 1
+
+            arr[start] = value
+
+            start += 1
+            mid += 1
+            start2 += 1
+
+
+def merge_sort(arr, left, right):
+    if left < right:
+        m = left + (right - left) // 2
+
+        # Sort first and second halves
+        merge_sort(arr, left, m)
+        merge_sort(arr, m + 1, right)
+
+        merge(arr, left, m, right)
 
 
 @dp.message_handler(commands=['start'])
@@ -73,13 +97,13 @@ async def start_command(msg: types.Message):
         await msg.reply(str(gen(msg.from_user.id)))
 
 
-@dp.message_handler(commands=['bubble_sort'])
+@dp.message_handler(commands=['merge_sort'])
 async def start_command(msg: types.Message):
     if len(msg.get_args().split()):
         arrays[msg.from_user.id] = list(map(int, msg.get_args().split()))
     if not arrays.get(msg.from_user.id, False):
         gen(msg.from_user.id)
-    bubble_sort(arrays[msg.from_user.id])
+    merge_sort(arrays[msg.from_user.id], 0, len(arrays[msg.from_user.id]))
     await msg.reply(str(arrays[msg.from_user.id]))
 
 if __name__ == '__main__':
