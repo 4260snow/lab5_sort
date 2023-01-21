@@ -16,16 +16,38 @@ def gen(user_id):
     return arr
 
 
-def bubble_sort(arr):
-    n = len(arr)
-    swapped = False
-    for i in range(n - 1):
-        for j in range(0, n - i - 1):
-            if arr[j] > arr[j + 1]:
-                swapped = True
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
-        if not swapped:
-            return
+def merge(alist, start, mid, end):
+    left = alist[start:mid]
+    right = alist[mid:end]
+    k = start
+    i = 0
+    j = 0
+    while start + i < mid and mid + j < end:
+        if left[i] <= right[j]:
+            alist[k] = left[i]
+            i = i + 1
+        else:
+            alist[k] = right[j]
+            j = j + 1
+        k = k + 1
+    if start + i < mid:
+        while k < end:
+            alist[k] = left[i]
+            i = i + 1
+            k = k + 1
+    else:
+        while k < end:
+            alist[k] = right[j]
+            j = j + 1
+            k = k + 1
+
+
+def merge_sort(alist, start, end):
+    if end - start > 1:
+        mid = (start + end)//2
+        merge_sort(alist, start, mid)
+        merge_sort(alist, mid, end)
+        merge(alist, start, mid, end)
 
 
 @dp.message_handler(commands=['start'])
@@ -39,7 +61,7 @@ async def start_command(msg: types.Message):
     await msg.answer("/new_array - получить новый массив из 10 случайных элементов\n"
                     "/my_array - посмотреть состояние массива\n"
                     "/swap idx1 idx2 - поменять местами 2 элемента с индексами idx1 и idx2\n"
-                    "/bubble_sort - сортировка пузырьком. Если выполнить без аргументов, то отсортирует имеющийся"
+                    "/merge_sort - сортировка слиянием. Если выполнить без аргументов, то отсортирует имеющийся"
                     " массив. Если передать несколько целых чисел через пробел, то вернёт из отсортированными"
                     "")
 
@@ -74,13 +96,13 @@ async def start_command(msg: types.Message):
         await msg.answer(str(gen(msg.from_user.id)))
 
 
-@dp.message_handler(commands=['bubble_sort'])
+@dp.message_handler(commands=['merge_sort'])
 async def start_command(msg: types.Message):
     if len(msg.get_args().split()):
         arrays[msg.from_user.id] = list(map(int, msg.get_args().split()))
     if not arrays.get(msg.from_user.id, False):
         gen(msg.from_user.id)
-    bubble_sort(arrays[msg.from_user.id])
+    merge_sort(arrays[msg.from_user.id], 0, len(arrays[msg.from_user.id]))
     await msg.answer(str(arrays[msg.from_user.id]))
 
 if __name__ == '__main__':
