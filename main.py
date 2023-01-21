@@ -54,13 +54,13 @@ def merge_sort(arr, left, right):
 
 @dp.message_handler(commands=['start'])
 async def start_command(msg: types.Message):
-    await msg.reply("Бот для сортировки массивов\n"
+    await msg.answer("Бот для сортировки массивов\n"
                     "/help, чтобы узнать команды")
 
 
 @dp.message_handler(commands=['help'])
 async def start_command(msg: types.Message):
-    await msg.reply("/new_array - получить новый массив из 10 случайных элементов\n"
+    await msg.answer("/new_array - получить новый массив из 10 случайных элементов\n"
                     "/my_array - посмотреть состояние массива\n"
                     "/swap idx1 idx2 - поменять местами 2 элемента с индексами idx1 и idx2\n"
                     "/merge_sort - сортировка слиянием. Если выполнить без аргументов, то отсортирует имеющийся"
@@ -70,15 +70,15 @@ async def start_command(msg: types.Message):
 
 @dp.message_handler(commands=['new_array'])
 async def start_command(msg: types.Message):
-    await msg.reply(str(gen(msg.from_user.id)))
+    await msg.answer(str(gen(msg.from_user.id)))
 
 
 @dp.message_handler(commands=['my_array'])
 async def start_command(msg: types.Message):
     if arrays.get(msg.from_user.id, False):
-        await msg.reply(str(arrays[msg.from_user.id]))
+        await msg.answer(str(arrays[msg.from_user.id]))
     else:
-        await msg.reply(str(gen(msg.from_user.id)))
+        await msg.answer(str(gen(msg.from_user.id)))
 
 @dp.message_handler(commands=['swap'])
 async def start_command(msg: types.Message):
@@ -88,13 +88,13 @@ async def start_command(msg: types.Message):
             try:
                 arrays[msg.from_user.id][int(tmp[0])], arrays[msg.from_user.id][int(tmp[1])] =\
                     arrays[msg.from_user.id][int(tmp[1])], arrays[msg.from_user.id][int(tmp[0])]
-                await msg.reply(str(arrays[msg.from_user.id]))
+                await msg.answer(str(arrays[msg.from_user.id]))
             except:
-                await msg.reply("Некорректные аргументы")
+                await msg.answer("Некорректные аргументы")
         else:
-            await msg.reply("Неверное количсество аргументов")
+            await msg.answer("Неверное количсество аргументов")
     else:
-        await msg.reply(str(gen(msg.from_user.id)))
+        await msg.answer(str(gen(msg.from_user.id)))
 
 
 @dp.message_handler(commands=['merge_sort'])
@@ -104,7 +104,7 @@ async def start_command(msg: types.Message):
     if not arrays.get(msg.from_user.id, False):
         gen(msg.from_user.id)
     merge_sort(arrays[msg.from_user.id], 0, len(arrays[msg.from_user.id]))
-    await msg.reply(str(arrays[msg.from_user.id]))
+    await msg.answer(str(arrays[msg.from_user.id]))
 
 if __name__ == '__main__':
     executor.start_polling(dp)
